@@ -4,7 +4,7 @@ const mailtemplate = require("../mailTemplates/verificatoinTemplate")
 exports.sendmailyup = async(req,res)=>{
     try{
         console.log("start")
-        // mailSender("finaly yup", "me subject hu", mailtemplate(456789) )
+        mailSender("mns102720@gmail.com", "me subject hu", mailtemplate(456789) )
         console.log("mid send mail")
         
         return res.status(200).json({
