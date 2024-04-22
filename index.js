@@ -7,18 +7,11 @@ const router = require("./routers/routes")
 const sequelize = require("./Config/dbConnect")
 
 //middlewares
-app.use(cors)
 app.use(express.json());
-
-const port = process.env.PORT
-
+app.use(cors)
 app.use('/api/v1', router)
 
-
-//defalult routes
-app.get('/', (req, res)=>{
-    res.send("hello world this is home page")
-})
+const port = process.env.PORT
 
 app.listen(port, ()=>{
     console.log(`app is running of port number ${port}`)

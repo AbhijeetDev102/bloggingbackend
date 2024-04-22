@@ -1,21 +1,20 @@
-const { DataTypes } = require('sequelize');
-const sequelize = require('../Config/dbConnect'); 
+const mailSender = require("../utils/mailsender")
+const mailtemplate = require("../mailTemplates/verificatoinTemplate")
 
-const Opt = sequelize.define('Opt', {
-  email: {
-    type: DataTypes.STRING,
-    allowNull: false,
-    unique: true, 
-    validate: {
-      isEmail: true, // Validate that the email is in the correct format
-    },
-  },
-  optedIn: {
-    type: DataTypes.BOOLEAN,
-    allowNull: false,
-    defaultValue: false, // Default to false, indicating the user has not opted in
-  },
+exports.sendmailyup = async(req,res)=>{
+    try{
+        console.log("start")
+        // mailSender("finaly yup", "me subject hu", mailtemplate(456789) )
+        console.log("mid send mail")
+        
+        return res.status(200).json({
+            seccess:true,
+        })
+    }catch(error){
+        console.log(err.message)
+        res.status(500).json({ 
+            message: 'Error while sending',
+            error:error.message
+         });
+    }
 }
-);
-
-module.exports = Opt;
