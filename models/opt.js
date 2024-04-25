@@ -10,8 +10,8 @@ const Opt = sequelize.define('Opt', {
       isEmail: true, // Validate that the email is in the correct format
     },
   },
-  optedIn: {
-    type: DataTypes.BOOLEAN,
+  otp: {
+    type: DataTypes.INTEGER,
     allowNull: false,
     defaultValue: false, // Default to false, indicating the user has not opted in
   },
