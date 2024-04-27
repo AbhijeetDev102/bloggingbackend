@@ -6,53 +6,28 @@ const otpGenerator = require("otp-generator");
 const { where } = require("sequelize");
 
 // exports.sendmailyup = async(req,res)=>{
-//     try{
-//         console.log("start")
-//         mailSender("mns102720@gmail.com", "me subject hu", mailtemplate(456789) )
-//         console.log("mid send mail")
+    // try{
+    //     console.log("start")
+    //     mailSender("mns102720@gmail.com", "me subject hu", mailtemplate(456789) )
+    //     console.log("mid send mail")
 
-//         return res.status(200).json({
-//             seccess:true,
-//         })
-//     }catch(error){
-//         console.log(error.message)
-//         res.status(500).json({
-//             message: 'Error while sending',
-//             error:error.message
-//          });
-//     }
-// }
-
-// exports.sendOtpData = async (req, res)=>{
-//     try{
-//         console.log("Start")
-
-//         const {email, otp} = req.body;
-
-//         if(!email || !otp){
-//             return res.status(500).json({
-//                 message:"all field are required",
-//             })
-//         }
-
-//         const data = await Otp.create({email, otp})
-
-//         return res.status(200).json({
-//             message:"data created succcessfully"
-//         })
-
-//     }catch(err){
-//         console.log(err.message)
-//         res.status(500).json({
-//             message: 'Error while sending',
-//             error:err.message
-//          });
-//     }
+    //     return res.status(200).json({
+    //         seccess:true,
+    //     })
+    // }catch(error){
+    //     console.log(error.message)
+    //     res.status(500).json({
+    //         message: 'Error while sending',
+    //         error:error.message
+    //      });
+    // }
 // }
 
 exports.sendOtp = async (req, res)=>{
-  const {email} = req.body;
+  try{
 
+    const {email} = req.body;
+    
   //check if user already exist
   const checkUserAlreadyExist = await User.findOne({
     where:{email}
@@ -72,9 +47,18 @@ exports.sendOtp = async (req, res)=>{
     specialChars:false,
   })
 
-  console.log("otp is =" otp)
+  mailSender(email, "Otp Varificaton mail", mailtemplate(otp) )
 
+  await Otp.create({email, otp})
+
+  res.status(200).json({
+    success: true,
+    message: "otp send successfully",
+  });
   
+}catch(err){
+  console.log(err.message)
+}
 
 }
 
@@ -87,7 +71,7 @@ exports.signup = async (req, res) => {
       email,
       password,
       confirmPassword,
-      // otp,
+      otp,
     } = req.body;
 
     if (
@@ -96,7 +80,8 @@ exports.signup = async (req, res) => {
       !lastName ||
       !email ||
       !password ||
-      !confirmPassword
+      !confirmPassword ||
+      !otp
     ) {
       return res.status(403).send({
         success: false,
