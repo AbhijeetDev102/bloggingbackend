@@ -1,19 +1,14 @@
 const { DataTypes } = require('sequelize');
 const sequelize = require('../Config/dbConnect'); 
 
-const Opt = sequelize.define('Opt', {
+const Opt = sequelize.define('Otp', {
   email: {
     type: DataTypes.STRING,
-    allowNull: false,
-    unique: true, 
-    validate: {
-      isEmail: true, // Validate that the email is in the correct format
-    },
+    allowNull: false, 
   },
   otp: {
     type: DataTypes.INTEGER,
     allowNull: false,
-    defaultValue: false, // Default to false, indicating the user has not opted in
   },
 }
 );
