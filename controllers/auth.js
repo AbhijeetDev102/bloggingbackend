@@ -40,14 +40,14 @@ exports.sendOtp = async (req, res)=>{
     lowerCaseAlphabets:false,
     specialChars:false,
   })
-
-  mailSender(email, "Otp Varificaton mail", mailtemplate(otp) )
-
   await Otp.create({email, otp})
+
+  await mailSender(email, "Otp Varificaton mail", mailtemplate(otp) )
 
   res.status(200).json({
     success: true,
     message: "otp send successfully",
+    otp
   });
   
 }catch(err){
