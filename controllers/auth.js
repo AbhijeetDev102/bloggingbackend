@@ -60,7 +60,7 @@ exports.sendOtp = async (req, res)=>{
 
 }
 
-exports.signup = async (req, res) => {
+exports.signup = async (req, res, otp) => {
   try {
     const {
       userName,
@@ -86,8 +86,6 @@ exports.signup = async (req, res) => {
         message: "All Fields are required",
       });
     }
-
-    console.log("yup man")
 
     // Check if password and confirm password match
     if (password !== confirmPassword) {
@@ -123,35 +121,47 @@ exports.signup = async (req, res) => {
     const hashedPassword = await bcrypt.hash(password, 10);
 
       // Find the most recent OTP for the email
-    const response = await Otp.findOne({where:{email} })
-    console.log("response is : ", response);
-
-
-
-            // Create the user
-      //   const user = await User.create({
-      //     userName,
-      //     firstName,
-      //     lastName,
-      //     email,
-      //     password: hashedPassword,
-      //     confirmPassword: hashedPassword,
-      //     otp,
-      //     approve:true
-      // });
-
-    return res.status(200).json({
-        success: true,
-        // user,
-        message: "User registered successfully",
-        response
+      const response = await Otp.findOne({
+        where: { email },
+        attributes: ['otp'], 
       });
+
+      let otpData = null
+      if(response){
+        otpData = response.otp.toString();
+        console.log("response is : ", response);
+      }
+
+      if(otpData == otp){
+        console.log("mja a gya yarrrrrrrrrrrrrrrrrrrrrrrrrrrrrr")
+              // Create the user
+              const user = await User.create({
+                userName,
+                firstName,
+                lastName,
+                email,
+                password: hashedPassword,
+                confirmPassword: hashedPassword,
+                approve:true
+            });
+            return res.status(200).json({
+              success: true,
+              user,
+              message: "User registered successfully",
+            });
+      }else{
+        console.log("mja nhi aya yarrrrrrrrrrrrrrrrrrrr")
+        return res.status(500).json({
+          success: false,
+          message: "otp not matched",
+        });
+      }
+
   } catch (err) {
     console.error(err.message);
     return res.status(500).json({
       success: false,
       message: "User cannot be registered. Please try again.",
-      res:response.otp
     });
   }
 };
