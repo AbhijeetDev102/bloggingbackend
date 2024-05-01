@@ -47,7 +47,6 @@ exports.sendOtp = async (req, res)=>{
   res.status(200).json({
     success: true,
     message: "otp send successfully",
-    otp
   });
   
 }catch(err){
@@ -146,7 +145,6 @@ exports.signup = async (req, res) => {
             });
             return res.status(200).json({
               success: true,
-              result:user,
               message: "User registered successfully",
             });
       }else{
