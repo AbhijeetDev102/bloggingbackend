@@ -60,7 +60,7 @@ exports.sendOtp = async (req, res)=>{
 
 }
 
-exports.signup = async (req, res, otp) => {
+exports.signup = async (req, res) => {
   try {
     const {
       userName,
@@ -146,7 +146,7 @@ exports.signup = async (req, res, otp) => {
             });
             return res.status(200).json({
               success: true,
-              user,
+              result:user,
               message: "User registered successfully",
             });
       }else{
@@ -165,3 +165,57 @@ exports.signup = async (req, res, otp) => {
     });
   }
 };
+
+exports.login = async (req, res) => {
+  try{
+
+    const {email, password} = req.body;
+
+    //check user with provided email
+
+    const userExist = await User.findOne({
+      where:{email}
+    })
+
+    if(!userExist){
+      return res.status(500).json({
+        seccess:false,
+        message:"User is not Registered with Us Please SignUp to Continue"
+      })
+    }
+
+
+     // Generate JWT token and Compare Password
+     if (await bcrypt.compare(password, userExist.password)) {
+      const token = jwt.sign(
+        { email: userExist.email, id: userExist.id, userName: userExist.userName },
+        process.env.JWT_SECRET,
+        {
+          expiresIn: "24h",
+        }
+      );
+
+      // Save token to user document in database
+      userExist.token = token;
+      userExist.password = undefined;
+      userExist.confirmPassword = undefined;
+
+      return res.status(200).json({
+        success:true,
+        result:userExist,
+        token
+      })
+
+    }else{
+      return res.status(401).json({
+        success: false,
+        message: `Password is incorrect`,
+      });
+    }
+  }catch(err){
+    return res.status(500).json({
+      success:false,
+      message:"Login auth failed"
+    })
+  }
+}
