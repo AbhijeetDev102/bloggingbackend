@@ -132,7 +132,6 @@ exports.signup = async (req, res) => {
       }
 
       if(otpData == otp){
-        console.log("mja a gya yarrrrrrrrrrrrrrrrrrrrrrrrrrrrrr")
               // Create the user
               const user = await User.create({
                 userName,
@@ -148,7 +147,6 @@ exports.signup = async (req, res) => {
               message: "User registered successfully",
             });
       }else{
-        console.log("mja nhi aya yarrrrrrrrrrrrrrrrrrrr")
         return res.status(500).json({
           success: false,
           message: "otp not matched",
