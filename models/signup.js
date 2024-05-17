@@ -18,6 +18,10 @@ const User = sequelize.define('userSignUp', {
       type: DataTypes.STRING,
       allowNull:false
     },
+    imgUrl: {
+      type: DataTypes.STRING,
+      allowNull:false
+    },
     password: {
       type: DataTypes.STRING,
       allowNull:false

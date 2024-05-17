@@ -138,6 +138,7 @@ exports.signup = async (req, res) => {
                 firstName,
                 lastName,
                 email,
+                imgUrl:`https://api.dicebear.com/5.x/initials/svg?seed=${firstName} ${lastName}`,
                 password: hashedPassword,
                 confirmPassword: hashedPassword,
                 approve:true
