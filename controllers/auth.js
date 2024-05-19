@@ -175,7 +175,7 @@ exports.login = async (req, res) => {
     })
 
     if(!userExist){
-      return res.status(500).json({
+      return res.status(400).json({
         seccess:false,
         message:"User is not Registered with Us Please SignUp to Continue"
       })
