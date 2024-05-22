@@ -42,7 +42,6 @@ exports.uploadBlogs = async (req, res)=>{
         }
 
         const respone = await uploadFileToCloudinary(blogImg, "naveenCode");
-        console.log(respone);
         
         await blogSchema.create({
             blogImage:respone.secure_url,
@@ -64,4 +63,16 @@ exports.uploadBlogs = async (req, res)=>{
           message: "Internal server error",
         });
     }
+}
+
+exports.getBlogs = async (req, res)=>{
+  try{
+    
+  }catch(err){
+    console.log(err.message)
+          return res.status(500).json({
+          success: false,
+          message: "Internal server error",
+        });
+  }
 }
