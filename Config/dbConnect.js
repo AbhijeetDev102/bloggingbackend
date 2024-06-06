@@ -9,14 +9,16 @@ const sequelize = new Sequelize(dbName, dbUser,  dbPassword, {
     host: hostName,
     dialect:'mysql',
     logging: false,
-    port: process.env.DB_PORT
+    port: process.env.DB_PORT || 4000
 });
 
-try {
-    sequelize.authenticate();
-    console.log('Connection has been established successfully.');
+(async function runSquelize() {
+  try {
+    await sequelize.authenticate();
+    console.log("Sequelize Connection Has Been Established Successfully.");
   } catch (error) {
-    console.error('Unable to connect to the database:', error);
-}
+    console.log("Unable to connect to the database:", error);
+  }
+})();
 
 module.exports = sequelize;
