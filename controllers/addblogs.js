@@ -1,5 +1,5 @@
 const cloudnary = require("cloudinary").v2;
-const { Op } = require("sequelize");
+const { Op, where } = require("sequelize");
 const blogSchema = require("../models/blogs");
 
 function isFileTypeSupported(type, supportedTypes) {
@@ -99,3 +99,38 @@ exports.getBlogs = async (req, res) => {
     });
   }
 };
+
+exports.searchBlog = async (req, res) => {
+  try{
+    const {query} = req.params;
+
+    const searchResult = await blogSchema.findAll({
+      where:{
+        [Op.or]:[{
+          title:{
+            [Op.like]: `%${query}%`
+          }
+        },{
+          category:{
+            [Op.like]: `%${query}%`
+          }
+        }]
+      }
+    })
+
+    return res.status(200).json({
+      success:true,
+      message:"Data fetched successfully",
+      result:searchResult
+    })
+
+
+
+  }catch{
+    console.log(err.message);
+    return res.status(500).json({
+      success: false,
+      message: "Internal server error",
+    });
+  }
+}

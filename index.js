@@ -15,8 +15,9 @@ app.use(fileUpload({
     tempFileDir:'/tmp/'
 })) 
 app.use('/api/v1', router)
+
 app.use("", async(req,res)=>{
-    res.send("hellow")
+    res.send("hello world")
 })
 const port = process.env.PORT || 8000
 
