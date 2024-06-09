@@ -1,5 +1,6 @@
 const mailSender = require("../utils/mailsender");
 const mailtemplate = require("../mailTemplates/verificatoinTemplate");
+const {passwordUpdated} = require("../mailTemplates/passwordUpdate");
 const Otp = require("../models/opt.js");
 const User = require("../models/signup.js");
 const otpGenerator = require("otp-generator");
@@ -159,6 +160,7 @@ exports.signup = async (req, res) => {
     return res.status(500).json({
       success: false,
       message: "User cannot be registered. Please try again.",
+      error:err.message
     });
   }
 };
@@ -213,7 +215,66 @@ exports.login = async (req, res) => {
     return res.status(500).json({
       success:false,
       message:"Login auth failed",
-      err:err.message
+      error:err.message
     })
   }
-}
+};
+
+exports.updatePassword = async (req, res) => {
+  try{
+
+    const {userId, oldPassword, newPassword, confirmNewPassword} = req.body;
+
+    //validate old password
+
+    const existingPassword = await User.findOne({
+      where:{id:userId},
+      // attributes:['password'],
+    });
+
+    // let existingPasswordExis = null
+    // if(existingPassword){
+    //   existingPasswordExis = existingPassword.password.toString();
+    // }
+
+    const isPasswordMatched = await bcrypt.compare(oldPassword, existingPassword.password)
+
+    if (!isPasswordMatched) {
+      // If old password does not match, return a 401 (Unauthorized) error
+      return res
+        .status(401)
+        .json({ success: false, message: "The password is incorrect" });
+    }
+
+    // Match new password and confirm new password
+    if (newPassword !== confirmNewPassword) {
+      // If new password and confirm new password do not match, return a 400 (Bad Request) error
+      return res.status(400).json({
+        success: false,
+        message: "The password and confirm password does not match",
+      });
+    }
+
+    //update password
+    const hashedNewPassword = await bcrypt.hash(newPassword, 10);
+
+    const updatedPassword =  await User.update(
+      {password:hashedNewPassword},
+      {where:{id:userId}}
+    )
+    // console.log(passwordUpdated())
+    await mailSender(existingPassword.email, "Password Update Successfully", passwordUpdated(existingPassword.email, existingPassword.userName)
+   )
+
+    return res.status(200).json({ success: true, message: "Password updated successfully" });
+
+
+  }catch(err){
+    return res.status(500).json({
+      success:false,
+      message:"Failed to change password",
+      error:err.message
+    })
+  }
+};
+
