@@ -124,9 +124,30 @@ exports.searchBlog = async (req, res) => {
       result:searchResult
     })
 
+  }catch (err){
+    console.log(err.message);
+    return res.status(500).json({
+      success: false,
+      message: "Internal server error",
+    });
+  }
+}
 
+exports.getBlogById = async (req, res) => {
+  try{
+    const {id} = req.params;
 
-  }catch{
+    const result = await blogSchema.findAll({
+      where:{id}
+    })
+
+    return res.status(200).json({
+      success:true,
+      message:"data get successfully",
+      result
+    })
+
+  }catch(err){
     console.log(err.message);
     return res.status(500).json({
       success: false,
